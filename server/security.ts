@@ -22,13 +22,9 @@ import type { Config } from "./config.ts";
  * not arbitrary JavaScript eval.
  */
 function buildCsp(config: Config): string {
-  const modelHosts = [
-    "https://cdn.jsdelivr.net",
-    "https://storage.googleapis.com",
-    "https://huggingface.co",
-    "https://cdn-lfs.huggingface.co",
-    "https://cdn-lfs-us-1.huggingface.co",
-  ].join(" ");
+  // MediaPipe only: its WASM comes from jsDelivr and its models from Google.
+  // Nothing else is reachable — the semantic reads go through our own API.
+  const modelHosts = ["https://cdn.jsdelivr.net", "https://storage.googleapis.com"].join(" ");
 
   const directives = [
     "default-src 'self'",

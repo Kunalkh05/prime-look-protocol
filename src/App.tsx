@@ -402,9 +402,13 @@ export default function App({ serverAnalysis = false }: { serverAnalysis?: boole
   const hasDetection = Object.keys(detected).length > 0;
   const beardApplies = draft.gender !== "fem";
   const poseDetected = !!detected.body;
-  const reviewFields = PHOTO_FIELDS.filter(
-    (f) => !(f.key === "beard" && !beardApplies),
-  );
+
+  const applicable = PHOTO_FIELDS.filter((f) => !(f.key === "beard" && !beardApplies));
+  // Only fields something actually read go in the review panel. Anything no
+  // detector answered — the semantic reads, when no server is configured —
+  // drops through to the questions below rather than sitting there blank.
+  const reviewFields = applicable.filter((f) => detected[f.key]);
+  const unreadFields = applicable.filter((f) => !detected[f.key]);
 
   return (
     <>
@@ -716,6 +720,25 @@ export default function App({ serverAnalysis = false }: { serverAnalysis?: boole
                       <div className="legend">Frame &amp; Posture</div>
                       <Chips label="Body type" options={BODY_OPTS} value={draft.body ?? null} onChange={setTyped("body")} />
                       <Chips label="Posture" options={POSTURE_OPTS} value={draft.posture ?? null} onChange={setTyped("posture")} />
+                    </div>
+                  )}
+
+                  {hasDetection && unreadFields.length > 0 && (
+                    <div className="fieldset">
+                      <div className="legend">Nothing read these</div>
+                      <p className="hint" style={{ margin: "0 0 4px" }}>
+                        These need a model too large to run in your browser. Turn on server
+                        analysis above to have them filled in, or just answer them here.
+                      </p>
+                      {unreadFields.map((f) => (
+                        <Chips
+                          key={f.key}
+                          label={f.label}
+                          options={f.options}
+                          value={(draft[f.key] as string) ?? null}
+                          onChange={(v) => setField(f.key, v)}
+                        />
+                      ))}
                     </div>
                   )}
 

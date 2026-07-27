@@ -39,9 +39,10 @@ export function CloudOptIn({
         onClick={() => setExpanded((e) => !e)}
       >
         <span>
-          <strong>Want a more accurate read?</strong>
+          <strong>Let the server read the rest?</strong>
           <span className="cloud-sub">
-            Optional — sends your photo to the server for a second opinion. Off by default.
+            Optional — fills in hair type, age and teeth, and sharpens the skin read. Off by
+            default; without it those become questions.
           </span>
         </span>
         <span className="cloud-chevron" aria-hidden="true">
@@ -52,10 +53,12 @@ export function CloudOptIn({
       {expanded && (
         <div className="cloud-body">
           <p className="cloud-warning">
-            <strong>This one uploads your photo.</strong> Everything else runs on your own device
-            and nothing leaves it. Turn this on and your photo is sent to the server, passed to a
-            vision model, and discarded — it isn't saved or logged. It mainly helps with the
-            subtler fields like skin type and concerns.
+            <strong>This one uploads your photo.</strong> Your face shape, all eleven proportion
+            measurements, hairline, brows, beard and colouring are measured on your own device and
+            never leave it. What the server adds is the judgement calls — hair type, age, teeth,
+            skin concerns — which need a model too large to run in a browser. Your photo is sent,
+            read, and discarded: not saved, not logged. Leave this off and those become four
+            questions instead.
           </p>
 
           <label className="cloud-check">

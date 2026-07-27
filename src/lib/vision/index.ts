@@ -4,16 +4,22 @@
  * Runs every available detector over the photo and merges the results into one
  * map of auto-filled profile fields. Two rules govern the merge:
  *
- *   1. **Every stage is optional.** A CDN blocked, WebGPU missing, the model
- *      download failing — none of these should cost the user the fields that
- *      other detectors already answered. Each stage is caught individually.
- *   2. **Highest confidence wins.** When two detectors answer the same field
- *      (segmentation and CLIP both have opinions on hair density), the more
- *      confident reading is kept, so adding a detector can never make a field
- *      worse.
+ *   1. **Every stage is optional.** A blocked CDN or a failed request should
+ *      not cost the user the fields other detectors already answered, so each
+ *      stage is caught individually.
+ *   2. **Highest confidence wins**, so adding a detector can never make a
+ *      field worse than it already was.
  *
- * What deliberately isn't here: height and style goal. Neither is a physical
- * fact a photo contains, so they stay as questions rather than being guessed.
+ * The split between on-device and server work is drawn along what is actually
+ * *measurable*. Landmark geometry, hair coverage and pixel statistics produce
+ * real numbers — a vision API asked for a gonial angle would invent a plausible
+ * one — so those stay local and always run. The semantic reads (hair type, age,
+ * teeth) are judgement calls a language-vision model does better than anything
+ * that fits in a browser, so they come from the server when one is configured
+ * and fall back to being questions when it isn't.
+ *
+ * Height and style goal are never inferred at all. Neither is a physical fact a
+ * photo contains.
  */
 
 import type {
@@ -26,7 +32,6 @@ import type { NormalizedImage } from "../image";
 import { analyzeImageDetailed } from "../faceAnalysis";
 import { analyzeHair } from "./segmentation";
 import { analyzeAppearance } from "./appearance";
-import { analyzeSemantics } from "./zeroShot";
 
 export interface DetectionResult {
   analysis: FaceAnalysis;
@@ -119,24 +124,12 @@ export async function detectFromPhoto(
     failures.push("hairline and hair density");
   }
 
-  onProgress?.({ stage: "Loading the vision model", ratio: null });
-  try {
-    const semantics = await analyzeSemantics(img.dataUrl, onProgress);
-    merge(detected, {
-      hair: semantics.hair,
-      age: semantics.age,
-      gender: semantics.gender,
-      teeth: semantics.teeth,
-    });
-  } catch (e) {
-    console.error("Zero-shot analysis failed", e);
-    failures.push("hair type, age and gender");
-  }
-
   // Server analysis runs last, so its typically higher confidence overrides the
-  // local readings rather than the other way round.
+  // local readings rather than the other way round. It is also the only source
+  // for the semantic fields — without it they stay unanswered and become
+  // questions, which is a better outcome than a bad guess.
   if (opts.serverAnalyze) {
-    onProgress?.({ stage: "Running the server analysis you enabled", ratio: null });
+    onProgress?.({ stage: "Reading hair type, age and teeth", ratio: null });
     try {
       merge(detected, await opts.serverAnalyze(img.dataUrl));
     } catch (e) {

@@ -56,9 +56,12 @@ client IPs. Don't set it otherwise: without a proxy in front, clients can spoof
 
 Two paths, and the difference matters.
 
-**On-device (default, always on).** MediaPipe and a CLIP model run in your
-browser. Your photo never leaves your machine. This fills in every field on its
-own — the server path is genuinely optional.
+The split is drawn along what is actually **measurable**.
+
+**On-device (always on, never optional).** Everything that produces a real
+number. Ask a vision API for your gonial angle and it will invent a plausible
+one — it has no way to measure. So this stays local, and your photo never
+leaves your machine for any of it.
 
 | What | How |
 |---|---|
@@ -66,14 +69,17 @@ own — the server path is genuinely optional.
 | Brows, beard, oiliness, redness | Pixel statistics — no model |
 | Hairline stage, hair density | MediaPipe hair segmentation |
 | Body type, posture | MediaPipe pose (optional 2nd photo) |
-| Hair type, age, gender, teeth | CLIP zero-shot |
 
-First run downloads ~40MB of model, cached by the browser afterwards.
+**Server-side (opt-in, off by default).** The judgement calls — hair type, age,
+teeth, skin concerns — which need a model too large to run in a browser. Set
+`VISION_PROVIDER` to `gemini` or `huggingface` and add the matching key. Users
+get a checkbox saying plainly that their photo will be uploaded. The key stays
+on the server and never reaches the browser.
 
-**Server-side (opt-in, off by default).** Set `VISION_PROVIDER` to `gemini` or
-`huggingface` and add the matching key. Users then get a checkbox that says
-plainly that their photo will be uploaded. The API key stays on the server and
-is never sent to the browser.
+Leave it off and those four become questions. That is a better outcome than a
+confident wrong guess, which is what the previous in-browser CLIP model gave —
+it cost a 40MB download and roughly 95MB of deployed assets to be worse at
+these fields than one API call.
 
 Height and style goal are never inferred — a photo can't tell you someone's
 height, and style is a preference, not a feature.
