@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PRIME — Look Optimization Protocol</title>
+    <meta
+      name="description"
+      content="Upload a photo and get a personalised grooming and style protocol. On-device AI measures your facial proportions and colouring, then ranks what to actually do first — hair, brows, skin, colour and fit. Nothing is uploaded."
+    />
+    <link rel="canonical" href="https://prime-look.app/" />
+    <meta name="theme-color" content="#7c8ea0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#10151a" media="(prefers-color-scheme: dark)" />
+
+    <!-- Social preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PRIME" />
+    <meta property="og:title" content="PRIME — Look Optimization Protocol" />
+    <meta
+      property="og:description"
+      content="On-device facial analysis and a ranked, personalised grooming protocol. Your photo never leaves your device."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:alt" content="PRIME Look Protocol" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PRIME — Look Optimization Protocol" />
+    <meta
+      name="twitter:description"
+      content="On-device facial analysis and a ranked, personalised grooming protocol."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <!-- Icons & install -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="PRIME" />
+
+    <!-- The analyzer's wasm + model come from these two origins on first run. -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      This tool runs its facial analysis entirely in your browser, so it needs JavaScript enabled.
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PRIME">
+  <rect width="512" height="512" fill="#7c8ea0" />
+  <!-- Safe zone for maskable icons is the middle 80%. -->
+  <g transform="translate(256 256)">
+    <path
+      d="M0,-136 C50,-136 82,-92 82,-36 C82,38 46,124 0,124 C-46,124 -82,38 -82,-36 C-82,-92 -50,-136 0,-136 Z"
+      fill="none"
+      stroke="#f3f6f9"
+      stroke-width="14"
+    />
+    <line x1="-58" y1="-52" x2="58" y2="-52" stroke="#c2d6f5" stroke-width="8" />
+    <line x1="-58" y1="26" x2="58" y2="26" stroke="#c2d6f5" stroke-width="8" />
+  </g>
+</svg>
