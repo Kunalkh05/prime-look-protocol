@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { FaceAnalysis, Profile } from "../types";
+import type { FaceAnalysis, Profile, Tone } from "../types";
 import {
   FACE,
   HAIR,
@@ -26,6 +26,7 @@ import { exportJson } from "../lib/storage";
 import { RichList, RichItem } from "./RichText";
 import { Metrics } from "./Metrics";
 import { Priorities } from "./Priorities";
+import { ToneToggle, VerdictBlock } from "./Verdict";
 import { BarberCard } from "./BarberCard";
 import { CutIcon, FaceOutline, FrameIcon } from "./Visuals";
 import { cutKindFor, frameKindsFor } from "../lib/styleMap";
@@ -71,10 +72,14 @@ export function Results({
   profile,
   analysis,
   onRestart,
+  tone,
+  onToneChange,
 }: {
   profile: Profile;
   analysis: FaceAnalysis | null;
   onRestart: () => void;
+  tone: Tone;
+  onToneChange: (t: Tone) => void;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -137,7 +142,12 @@ export function Results({
         </div>
       </div>
 
-      {/* Ranked plan first — it's the actionable part. */}
+      <ToneToggle tone={tone} onChange={onToneChange} />
+
+      {/* The verdict leads — it's the part that answers "what's actually wrong". */}
+      <VerdictBlock profile={profile} metrics={analysis?.metrics ?? []} tone={tone} />
+
+      {/* Then the ranked plan. */}
       <Priorities plan={plan} />
 
       {analysis && (

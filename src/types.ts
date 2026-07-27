@@ -109,6 +109,41 @@ export interface Action {
   pillar: string;
 }
 
+/**
+ * How hard the assessment pulls its punches.
+ *
+ * "direct" is the default: no hedging, names the actual problem, leads with
+ * the biggest liability. "measured" is the same content with the edges filed
+ * off, for anyone who'd rather not be told flatly.
+ */
+export type Tone = "direct" | "measured";
+
+/** One scored area of the assessment. */
+export interface DomainScore {
+  key: string;
+  label: string;
+  /** 0–10. Scores only ever describe something you can change. */
+  score: number;
+  /** How much this area moves how you read, regardless of current score. */
+  weight: 1 | 2 | 3;
+  /** The blunt read. */
+  verdict: string;
+  /** What to do. Always present — a verdict without one is just an insult. */
+  fix: string;
+  /** Realistic time to move this. */
+  horizon: string;
+}
+
+export interface Verdict {
+  /** The single thing costing the most, named first. */
+  headline: string;
+  /** Supporting detail for the headline. */
+  detail: string;
+  scores: DomainScore[];
+  /** Where the real ceiling is — often not the face. */
+  closing: string;
+}
+
 /** Where a detected value came from, so the UI can be honest about it. */
 export type DetectionSource =
   | "geometry" // landmark maths — deterministic

@@ -270,7 +270,7 @@ export function computeMetrics(lm: Pt[]): { metrics: Metric[]; thirds: Thirds; f
     action:
       tilt >= 1
         ? undefined
-        : "This one is bone and ligament, not habit — but under-eye puffiness exaggerates it, so sleep, salt and a cold rinse in the morning genuinely help how it reads.",
+        : "This is bone and ligament. It does not respond to effort, and it is nowhere near as important as the internet has told you. Under-eye puffiness exaggerates how it reads, so sleep and less evening salt are the only levers that exist — take them and then stop thinking about this.",
   });
 
   // — Jaw & chin —————————————————————————————————————
@@ -284,12 +284,12 @@ export function computeMetrics(lm: Pt[]): { metrics: Metric[]; thirds: Thirds; f
     status: statusOf(jaw, [110, 128]),
     note:
       jaw <= 128
-        ? "Your jaw turns a fairly sharp corner — that reads as definition."
-        : "Your jaw corner is on the softer, more obtuse side.",
+        ? "Your jaw turns a sharp corner. That's real definition and it's worth keeping visible."
+        : "Your jaw angle is soft. Whatever structure is under there, it isn't reading from the outside.",
     action:
       jaw <= 128
-        ? "Keep the beard neckline high and tight so the angle stays visible."
-        : "Body-fat percentage moves this more than anything else, and a defined beard edge along the jawline does the rest.",
+        ? "Keep the beard neckline high and tight so the angle stays visible. Don't bury it."
+        : "Body fat is what moves this, and nothing else comes close — not a beard, not a haircut, not an angle. Everything else is cosmetics on top.",
   });
 
   const jawRatio = jawWidth / (faceWidth || 1);

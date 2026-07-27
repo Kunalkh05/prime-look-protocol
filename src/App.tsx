@@ -39,6 +39,7 @@ import type {
   SkinType,
   Style,
   Teeth,
+  Tone,
   Undertone,
 } from "./types";
 
@@ -215,6 +216,19 @@ export default function App({ serverAnalysis = false }: { serverAnalysis?: boole
   const [msg, setMsg] = useState<string | null>(null);
   const [result, setResult] = useState<Profile | null>(null);
   const [resumable, setResumable] = useState<{ at: string } | null>(null);
+  // Direct by default; the toggle is there for anyone who'd rather it wasn't.
+  const [tone, setTone] = useState<Tone>(
+    () => (localStorage.getItem("prime.tone") as Tone) ?? "direct",
+  );
+
+  const changeTone = useCallback((t: Tone) => {
+    setTone(t);
+    try {
+      localStorage.setItem("prime.tone", t);
+    } catch {
+      /* storage disabled — the setting just won't persist */
+    }
+  }, []);
 
   const setField = useCallback((key: keyof Profile, value: string) => {
     setDraft((d) => ({ ...d, [key]: value }));
@@ -737,7 +751,15 @@ export default function App({ serverAnalysis = false }: { serverAnalysis?: boole
           </>
         )}
 
-        {result && <Results profile={result} analysis={analysis} onRestart={restart} />}
+        {result && (
+          <Results
+            profile={result}
+            analysis={analysis}
+            onRestart={restart}
+            tone={tone}
+            onToneChange={changeTone}
+          />
+        )}
       </div>
 
       {cameraOpen && <Camera onCapture={handleCapture} onClose={() => setCameraOpen(false)} />}
