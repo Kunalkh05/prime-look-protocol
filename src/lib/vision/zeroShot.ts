@@ -38,15 +38,19 @@ let classifierPromise: Promise<Classifier> | null = null;
 export function getClassifier(onProgress?: (p: DetectionProgress) => void): Promise<Classifier> {
   if (!classifierPromise) {
     classifierPromise = (async () => {
-      const { env, pipeline } = await import("@huggingface/transformers");
+      const { pipeline } = await import("@huggingface/transformers");
 
-      // Serve the runtime from our own origin as static files. Bundling it
-      // instead forces the largest (asyncify, ~22MB) build on every visitor;
-      // pointing at the directory lets ONNX Runtime pick the smallest binary
-      // the browser can actually run.
-      if (env.backends.onnx.wasm) {
-        env.backends.onnx.wasm.wasmPaths = `${import.meta.env.BASE_URL}ort/`;
-      }
+      // Note: wasmPaths is deliberately NOT set here.
+      //
+      // Setting it to a directory prefix makes ONNX Runtime derive *both* the
+      // .wasm binary and its .mjs glue module from that prefix — and the glue
+      // is a real JavaScript module. Pointing it at /public means Vite refuses
+      // to load it ("this file is in /public ... should not be imported from
+      // source code"), which kills the whole zero-shot stage.
+      //
+      // Only the 22MB binary is worth relocating, and the build-time transform
+      // in vite.config.ts already rewrites just that URL. The glue module stays
+      // on its normal resolution path through the bundler, where it belongs.
 
       // WebGPU is dramatically faster where it exists; wasm is the fallback.
       const device = "gpu" in navigator ? "webgpu" : "wasm";
